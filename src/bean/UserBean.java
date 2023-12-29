@@ -5,11 +5,20 @@ public class UserBean extends BaseIdBean{
     private String password;
     private Double balance;
 
+    public UserBean(){
+
+    }
+
     public UserBean(String username, String password) {
         this.username = username;
         this.password = password;
     }
-
+    public UserBean(String username, String password,Double balance,Integer id) {
+        super(id);
+        this.username = username;
+        this.password = password;
+        this.balance = balance;
+    }
     @Override
     public String toString() {
         return "UserBean{" +
