@@ -8,4 +8,43 @@ public class CarBean extends BaseIdBean{
     private Integer userId;
     private boolean isInStore;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public boolean isInStore() {
+        return isInStore;
+    }
+
+    public void setInStore(boolean inStore) {
+        isInStore = inStore;
+    }
 }
