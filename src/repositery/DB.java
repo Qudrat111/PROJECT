@@ -126,5 +126,14 @@ public class DB {
         return null;
     }
 
+    public static CarBean getCarById1(int carId) {
+        for (CarBean car : CARS) {
+            if (car.getId().equals(carId)) {
+                return car;
+            }
+        }
+        return null;
+    }
+
 
 }
