@@ -12,6 +12,23 @@ public class CarBean extends BaseIdBean{
         return name;
     }
 
+    public CarBean(String name, String color, Double price, Integer userId, boolean isInStore) {
+        this.name = name;
+        this.color = color;
+        this.price = price;
+        this.userId = userId;
+        this.isInStore = isInStore;
+    }
+
+    public CarBean(Integer id, String name, String color, Double price, Integer userId, boolean isInStore) {
+        super(id);
+        this.name = name;
+        this.color = color;
+        this.price = price;
+        this.userId = userId;
+        this.isInStore = isInStore;
+    }
+
     public void setName(String name) {
         this.name = name;
     }

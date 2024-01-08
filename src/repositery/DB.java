@@ -8,34 +8,37 @@ import java.util.ArrayList;
 
 public class DB {
     static ArrayList<UserBean> USERS = new ArrayList<>();
+
     static {
         Integer size = USERS.size();
-        USERS.add(new UserBean("Qudrat","1111",1000.,size));
-        USERS.add(new UserBean("Abdurahmon","2222",1000.,size));
-        USERS.add(new UserBean("Ali","3333",1000.,size));
-        USERS.add(new UserBean("Samandar","4444",1000.,size));
+        USERS.add(new UserBean("Qudrat", "1111", 1000., size));
+        USERS.add(new UserBean("Abdurahmon", "2222", 1000., size));
+        USERS.add(new UserBean("Ali", "3333", 1000., size));
+        USERS.add(new UserBean("Samandar", "4444", 1000., size));
     }
-    static ArrayList<CarBean> CARS = new ArrayList<>();
 
-    public static UserBean addUser(UserBean bean){
-        if(existUserByLogin(bean.getUsername())){
-            return null;
+
+    public static UserBean addUser(UserBean newUser) {
+        if (!isUsernameExist(newUser.getUsername())) {
+            USERS.add(newUser);
+            newUser.setId(USERS.size() - 1);
+            return newUser;
         }
-        bean.setId(USERS.size());
-        bean.setBalance(1000.);
-        return bean;
+        return null;
     }
-    private static boolean existUserByLogin(String login){
-        for (UserBean user:USERS) {
-            if (user.getUsername().equals(login)){
+
+    private static boolean isUsernameExist(String username) {
+        for (UserBean user : USERS) {
+            if (user.getUsername().equals(username)) {
                 return true;
             }
         }
         return false;
     }
-    public static UserBean getUser(UserBean bean){
+
+    public static UserBean getUser(UserBean bean) {
         for (UserBean user : USERS) {
-            if(user.getUsername().equals(bean.getUsername()) && user.getPassword().equals(bean.getPassword())){
+            if (user.getUsername().equals(bean.getUsername()) && user.getPassword().equals(bean.getPassword())) {
                 return user;
             }
         }
@@ -43,60 +46,84 @@ public class DB {
     }
 
 
-    public static ApiResponse buyCar(int userId, int carId) {
-        CarBean carToBuy = null;
-        for (CarBean car : CARS) {
-            if (car.getId() == carId && car.isInStore()) {
-                carToBuy = car;
-                break;
-            }
-        }
+    static ArrayList<CarBean> CARS = new ArrayList<>();
 
-        if (carToBuy == null) {
-            return new ApiResponse(404, "Car not found or not for sale", null);
-        }
-
-        UserBean buyer = null;
+    public static boolean addCar(CarBean car) {
         for (UserBean user : USERS) {
-            if (user.getId() == userId) {
-                buyer = user;
-                break;
+            if (user.getId().equals(car.getUserId()) && user.getBalance() >= car.getPrice()) {
+                user.setBalance(user.getBalance() - car.getPrice());
+                car.setId(CARS.size());
+                CARS.add(car);
+                return true;
             }
         }
-
-        if (buyer == null) {
-            return new ApiResponse(404, "User not found", null);
-        }
-
-        if (buyer.getBalance() < carToBuy.getPrice()) {
-            return new ApiResponse(400, "Insufficient balance", null);
-        }
-
-        buyer.setBalance(buyer.getBalance() - carToBuy.getPrice());
-        carToBuy.setUserId(userId);
-        carToBuy.setInStore(false);
-
-        return new ApiResponse(200, "Car purchased successfully", carToBuy);
+        return false;
     }
 
-
-    public static ApiResponse sellCar(int userId, int carId) {
-        CarBean carToSell = null;
+    public static boolean sellCar(int carId) {
         for (CarBean car : CARS) {
-            if (car.getId() == carId && car.getUserId() == userId && !car.isInStore()) {
-                carToSell = car;
-                break;
+            if (car.getId() == carId) {
+                car.setInStore(true);
+                return true;
             }
         }
+        return false;
+    }
 
-        if (carToSell == null) {
-            return new ApiResponse(404, "Car not found or not owned by user", null);
+    public static void printUserCars(int userId) {
+        for (CarBean car : CARS) {
+            if (car.getUserId() != null && car.getUserId() == userId) {
+                String status = car.isInStore() ? "Sotuvda" : "Garajda"; // "For Sale" or "In Garage"
+                System.out.println("Car ID: " + car.getId() + ", Name: " + car.getName() + ", Status: " + status);
+            }
         }
+    }
 
-        // Set car as available for sale
-        carToSell.setInStore(true);
+    public static void printCarsForSale() {
+        System.out.println("Sotuvdagi mashinalar:");
+        for (CarBean car : CARS) {
+            if (car.isInStore()) {
+                System.out.println("ID: " + car.getId() + ", Name: " + car.getName() + ", Color: " + car.getColor() + ", Price: " + car.getPrice());
+            }
+        }
+    }
 
-        return new ApiResponse(200, "Car is now for sale", carToSell);
+    public static boolean buyCar(int userId, int carId) {
+        UserBean buyer = getUserById(userId);
+        CarBean carToBuy = getCarById(carId);
+
+        if (buyer != null && carToBuy != null && carToBuy.isInStore() && buyer.getBalance() >= carToBuy.getPrice()) {
+
+            buyer.setBalance(buyer.getBalance() - carToBuy.getPrice());
+            carToBuy.setUserId(userId);
+            carToBuy.setInStore(false);
+
+            UserBean seller = getUserById(carToBuy.getUserId());
+            if (seller != null) {
+                seller.setBalance(seller.getBalance() + carToBuy.getPrice());
+            }
+
+            return true;
+        }
+        return false;
+    }
+
+    public static UserBean getUserById(int userId) {
+        for (UserBean user : USERS) {
+            if (user.getId().equals(userId)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public static CarBean getCarById(int carId) {
+        for (CarBean car : CARS) {
+            if (car.getId().equals(carId)) {
+                return car;
+            }
+        }
+        return null;
     }
 
 
