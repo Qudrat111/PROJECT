@@ -5,7 +5,7 @@
       <element id="javaee-facet-resources" facet="JakartaPdpOnline/web/Web" />
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
-          <element id="module-output" name="FileUpload" />
+          <element id="module-output" name="CrudWithJakarta" />
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="Maven: org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1" />
