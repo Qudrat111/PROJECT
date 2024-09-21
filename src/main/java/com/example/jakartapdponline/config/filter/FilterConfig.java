@@ -15,7 +15,7 @@ public class FilterConfig implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         HttpSession session = request.getSession(false);
-        if (request.getRequestURI().equals("/login")) {
+        if (request.getRequestURI().equals("/login") || request.getRequestURI().equals("/register")) {
             filterChain.doFilter(request, response);
         } else if (session == null || session.getAttribute("user_id") == null) {
             response.sendRedirect("/login");
