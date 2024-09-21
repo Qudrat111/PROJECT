@@ -1,77 +1,45 @@
 package com.example.jakartapdponline.repository;
 
 import com.example.jakartapdponline.model.Group;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import jakarta.persistence.Query;
 
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class GroupRepository {
-    Connection conn;
+    EntityManager em;
 
     public GroupRepository() {
-        try {
-            Class.forName("org.postgresql.Driver");
-            String DB_URL = "jdbc:postgresql://localhost:5432/pdp_online";
-            String USER = "postgres";
-            String PASSWORD = "1234";
-            conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("orm");
+        em = emf.createEntityManager();
     }
 
     public void insertGroup(Group group) {
-        try (PreparedStatement preparedStatement = conn.prepareStatement("insert into groups (name,created_by) values " +
-                "(?,?)")) {
-            preparedStatement.setString(1, group.getName());
-            preparedStatement.setInt(2, group.getCreatedBy());
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        em.getTransaction().begin();
+        em.persist(group);
+        em.getTransaction().commit();
     }
 
     public void updateGroup(int id, Group group) {
-        try (PreparedStatement preparedStatement = conn.prepareStatement("update groups set " +
-                "name = ?," +
-                "updated_at = ?," +
-                "updated_by = ? where id = ?")) {
-            preparedStatement.setString(1, group.getName());
-            preparedStatement.setTimestamp(2, group.getUpdatedAt());
-            preparedStatement.setInt(3, group.getUpdatedBy());
-            preparedStatement.setInt(4, id);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        em.getTransaction().begin();
+        em.merge(group);
+        em.getTransaction().commit();
     }
 
     public void deleteGroup(int id) {
-        try (PreparedStatement preparedStatement = conn.prepareStatement("delete from groups where id = ?")) {
-            preparedStatement.setInt(1, id);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        em.getTransaction().begin();
+        em.remove(em.find(Group.class, id));
+        em.getTransaction().commit();
     }
 
     public Optional<List<Group>> getAll() {
-        List<Group> groups = new ArrayList<>();
-        try (PreparedStatement preparedStatement = conn.prepareStatement("select * from groups");
-             ResultSet resultSet = preparedStatement.executeQuery()) {
-            while (resultSet.next()) {
-                Group group = new Group();
-                group.setId(resultSet.getInt("id"));
-                group.setName(resultSet.getString("name"));
-                groups.add(group);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        em.getTransaction().begin();
+        Query nativeQuery = em.createNativeQuery("select * from orm.groups", Group.class);
+        ArrayList groups = new ArrayList<>(nativeQuery.getResultList());
         return Optional.of(groups);
     }
 }
