@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="exploded-war" name="JakartaSeesionCookie:Web exploded">
+  <artifact type="exploded-war" build-on-make="true" name="JakartaSeesionCookie:Web exploded">
     <output-path>$PROJECT_DIR$/out/artifacts/JakartaSeesionCookie_Web_exploded</output-path>
     <root id="root">
       <element id="javaee-facet-resources" facet="JakartaSeesionCookie/web/Web" />

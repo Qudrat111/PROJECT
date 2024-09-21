@@ -1,6 +1,6 @@
 package com.example.jakartapdponline.servlets;
 
-import com.example.jakartapdponline.db.AuthRepository;
+import com.example.jakartapdponline.repository.AuthRepository;
 import com.example.jakartapdponline.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

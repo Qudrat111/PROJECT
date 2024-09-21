@@ -1,19 +1,14 @@
 package com.example.jakartapdponline.servlets;
 
-import com.example.jakartapdponline.db.AuthRepository;
 import com.example.jakartapdponline.model.User;
+import com.example.jakartapdponline.repository.AuthRepository;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.*;
 
 import java.io.IOException;
 
 @WebServlet("/login")
-@WebFilter()
 public class LoginServlet extends HttpServlet {
     private final AuthRepository authRepository;
 
@@ -33,6 +28,7 @@ public class LoginServlet extends HttpServlet {
         User userByUsername = authRepository.getUserByUsername(username);
         if (userByUsername != null && userByUsername.getPassword().equals(password)) {
             HttpSession session = req.getSession();
+            session.setMaxInactiveInterval(10);
             session.setAttribute("user_id", userByUsername.getUser_id());
             System.out.println(userByUsername.getUser_id());
         }

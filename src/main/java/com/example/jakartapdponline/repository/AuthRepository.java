@@ -1,4 +1,4 @@
-package com.example.jakartapdponline.db;
+package com.example.jakartapdponline.repository;
 
 import com.example.jakartapdponline.model.User;
 
