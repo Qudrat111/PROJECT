@@ -1,20 +1,29 @@
 package com.example.jakartapdponline.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.sql.Date;
 import java.sql.Timestamp;
 
+@Entity
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@Table(name = "students", schema = "orm")
 public class Student {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private int group_id;
+    @Column(nullable = false)
     private String userName;
+    @Column(nullable = false)
     private String fullName;
+    @Column(nullable = false)
     private Date dateOfBirth;
     private Timestamp createdAt;
     private int createdBy;
